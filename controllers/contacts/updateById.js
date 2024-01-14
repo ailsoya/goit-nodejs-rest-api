@@ -1,8 +1,9 @@
-const Contact = require('../models/contact')
-const { RequestError } = require('../RequestError')
+const Contact = require('../../models/contact')
+const { RequestError } = require('../../helpers')
 
 const updateById = async (req, res, next) => {
   try {
+    const { _id } = req.user
     const contactId = req.params.contactId
     const body = req.body
 
@@ -10,7 +11,11 @@ const updateById = async (req, res, next) => {
       throw RequestError(400, "Missing fields")
     }
 
-    const contactUpdate = await Contact.findByIdAndUpdate(contactId, body, { new: true })
+    const contactUpdate = await Contact.findByIdAndUpdate({
+      _id: contactId,
+      owner: _id,
+    }, body, { new: true })
+
     if (!contactUpdate) {
       throw RequestError(404, "Not found")
     }
