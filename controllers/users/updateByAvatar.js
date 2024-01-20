@@ -7,6 +7,9 @@ const { RequestError } = require('../../helpers')
 
 const updateByAvatar = async (req, res, next) => {
     try {
+        if(!req.file) {
+            throw RequestError(400, "No file attached")
+        }
         const { _id } = req.user;
         const { path: tmpDir, originalname } = req.file
         const extension = originalname.split('.').pop()
